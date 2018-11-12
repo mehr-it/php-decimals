@@ -1,6 +1,12 @@
 {
   "name": "mehr-it/php-decimals",
+  "type": "library",
   "description": "Easy to use arithmetic operations for decimals in PHP (using BCMath)",
+  "keywords": [
+    "bc math",
+    "bcmath",
+    "decimal"
+  ],
   "minimum-stability": "stable",
   "license": "MIT",
   "authors": [
