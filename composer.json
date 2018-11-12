@@ -1,0 +1,26 @@
+{
+  "name": "mehr-it/php-decimals",
+  "description": "Easy to use arithmetic operations for decimals in PHP (using BCMath)",
+  "minimum-stability": "stable",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Christopher Mieger",
+      "email": "mail@mehr-it.info"
+    }
+  ],
+  "autoload": {
+    "psr-0": {
+      "": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-0": {
+      "": "test/"
+    }
+  },
+  "require": {
+    "ext-bcmath": "*",
+    "phpunit/phpunit": "^7.4"
+  }
+}
