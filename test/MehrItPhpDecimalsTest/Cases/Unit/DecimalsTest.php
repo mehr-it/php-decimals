@@ -45,6 +45,15 @@
 			$this->assertSame('-0.45', Decimals::norm('-.45'));
 			$this->assertSame('0.4', Decimals::norm('.4'));
 			$this->assertSame('-0.4', Decimals::norm('-.4'));
+			$this->assertSame('0', Decimals::norm(''));
+			$this->assertSame('-10', Decimals::norm('-10'));
+			$this->assertSame('-20', Decimals::norm('-20'));
+			$this->assertSame('20', Decimals::norm('20.0'));
+			$this->assertSame('20', Decimals::norm('00020.0'));
+			$this->assertSame('20.01', Decimals::norm('20.0100'));
+			$this->assertSame('0.0123', Decimals::norm('.0123'));
+			$this->assertSame('0.0123', Decimals::norm('0.0123'));
+			$this->assertSame('0.0123', Decimals::norm('00.0123'));
 		}
 
 		public function testAbs() {

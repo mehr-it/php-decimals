@@ -127,17 +127,38 @@
 		 * @return string The normalized string
 		 */
 		public static function norm($number) {
-			$number = ltrim(rtrim($number, '0.-'), '+');
 
+			if (!trim($number . ''))
+				return '0';
+
+			// remember and strip sign
+			$sign = '';
+			switch($number[0]) {
+				/** @noinspection PhpMissingBreakStatementInspection */
+				case '-':
+					$sign = '-';
+				case '+':
+					$number = substr($number, 1);
+			}
+
+
+			// strip off trailing decimal zeros
+			$sepPos = strpos($number, '.');
+			if ($sepPos !== false)
+				$number = substr($number, 0, $sepPos) . rtrim(substr($number, $sepPos), '.0');
+
+			// remove leading zeros
+			$number = ltrim($number, '0');
+
+			// all stripped, so this is zero
 			if ($number === '')
-				$number = '0';
+				return '0';
 
+			// prepend leading decimal separator with zero
 			if ($number[0] == '.')
 				$number = '0' . $number;
-			elseif ($number[0] == '-' && $number[1] == '.')
-				$number = '-0' . substr($number, 1);
 
-			return $number;
+			return $sign . $number;
 		}
 
 		/**
