@@ -59,8 +59,10 @@
 			$parsedValue = str_replace($decimalPoint, '.', $parsedValue, $replaceCount);
 
 			// check for valid number
-			if ($replaceCount > 1 || str_replace(array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'), '', ($parsedValue[0] == '-' ? substr($parsedValue, 1) : $parsedValue)) !== '')
-				throw new \InvalidArgumentException("\"$value\" is not a valid number");
+			if ($parsedValue !== '') {
+				if ($replaceCount > 1 || str_replace(array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'), '', ($parsedValue[0] == '-' ? substr($parsedValue, 1) : $parsedValue)) !== '')
+					throw new \InvalidArgumentException("\"$value\" is not a valid number");
+			}
 
 
 			return static::norm($parsedValue);

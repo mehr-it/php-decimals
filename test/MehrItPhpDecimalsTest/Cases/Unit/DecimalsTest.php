@@ -249,6 +249,7 @@
 			$this->assertSame('0', Decimals::parse('+0,0'));
 			$this->assertSame('0', Decimals::parse('0,0'));
 			$this->assertSame('0', Decimals::parse('-0,0'));
+			$this->assertSame('0', Decimals::parse('0'));
 
 			$this->assertSame('0', Decimals::parse('+0.'));
 			$this->assertSame('0', Decimals::parse('0.'));
@@ -325,12 +326,27 @@
 		public function testParse_Float_en() {
 			$this->withLocale('en_US.UTF-8', function () {
 				$this->assertSame('123.45', Decimals::parse((string)123.45));
+				$this->assertSame('123.45', Decimals::parse(123.45));
+				$this->assertSame('0', Decimals::parse((string)0.0));
+				$this->assertSame('0', Decimals::parse(0.0));
 			});
 		}
 
 		public function testParse_Float_de() {
 			$this->withLocale('de_DE.UTF-8', function () {
 				$this->assertSame('123.45', Decimals::parse((string)123.45));
+				$this->assertSame('123.45', Decimals::parse(123.45));
+				$this->assertSame('0', Decimals::parse((string)0.0));
+				$this->assertSame('0', Decimals::parse(0.0));
+			});
+		}
+
+		public function testParse_Int() {
+			$this->withLocale('de_DE.UTF-8', function () {
+				$this->assertSame('123', Decimals::parse((string)123));
+				$this->assertSame('123', Decimals::parse(123));
+				$this->assertSame('0', Decimals::parse((string)0));
+				$this->assertSame('0', Decimals::parse(0));
 			});
 		}
 
