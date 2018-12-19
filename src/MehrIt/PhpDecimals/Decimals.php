@@ -238,23 +238,14 @@
 		 * Multiplies two numbers
 		 * @param string $leftOperand The BCMath compatible left operand
 		 * @param string $rightOperand The BCMath compatible right operand
-		 * @param null $scale The scale to use for calculation. If omitted and only one operand has a fractional component, this scale will be used. Else the greater scale of both operands
+		 * @param null $scale The scale to use for calculation. If omitted the double of the greater scale of both operands will be used - but at least MUL_DEFAULT_SCALE
 		 * incremented by one will be used - but at least MUL_DEFAULT_SCALE
 		 * @return string The multiplication result
 		 */
 		public static function mul($leftOperand, $rightOperand, $scale = null) {
 
-			if ($scale === null) {
-				$leftDecimals  = static::decimals($leftOperand);
-				$rightDecimals = static::decimals($rightOperand);
-
-				if ($leftDecimals == 0)
-					$scale = $rightDecimals;
-				elseif ($rightDecimals == 0)
-					$scale = $leftDecimals;
-				else
-					$scale = max($leftDecimals + 1, $rightDecimals + 1, static::MUL_DEFAULT_SCALE);
-			}
+			if ($scale === null)
+				$scale = max(static::decimals($leftOperand) * 2, static::decimals($rightOperand) * 2, static::MUL_DEFAULT_SCALE);
 
 
 			return static::norm(bcmul($leftOperand, $rightOperand, $scale));
@@ -267,14 +258,19 @@
 		 * @param string $rightOperand The BCMath compatible right operand
 		 * @param null $scale The scale to use for calculation. If omitted the double of the greater scale of both operands will be used - but at least MUL_DEFAULT_SCALE
 		 * @return string The division result
+		 * @throws \DivisionByZeroError
 		 */
 		public static function div($leftOperand, $rightOperand, $scale = null) {
 
 			if ($scale === null)
 				$scale = max(static::decimals($leftOperand) * 2, static::decimals($rightOperand) * 2, static::MUL_DEFAULT_SCALE);
 
+			$res = @bcdiv($leftOperand, $rightOperand, $scale);
 
-			return static::norm(bcdiv($leftOperand, $rightOperand, $scale));
+			if ($res === null)
+				throw new \DivisionByZeroError('Divisor is 0');
+
+			return static::norm($res);
 
 		}
 
@@ -282,8 +278,8 @@
 		 * Compares two numbers
 		 * @param string $leftOperand The BCMath compatible left operand
 		 * @param string $rightOperand The BCMath compatible right operand
-		 * @param null $scale The scale to use for comparison. If omitted, the greater scale of both operands will be used
-		 * @return int 0 if both numbers are equal. 1 if the left operand is larger than the right operand. Else -1
+		 * @param null $scale The scale to use for comparison. If omitted, the greater scale of both operands will be used. If operands have more decimals than the scale, they are ignored.
+		 * @return int 0 if both numbers are equal. 1 if the left operand is greater than the right operand. Else -1
 		 */
 		public static function comp($leftOperand, $rightOperand, $scale = null) {
 
@@ -291,5 +287,49 @@
 				$scale = max(static::decimals($leftOperand), static::decimals($rightOperand));
 
 			return bccomp($leftOperand, $rightOperand, $scale);
+		}
+
+		/**
+		 * Returns whether the left operand is greater than the right operand
+		 * @param string $leftOperand The BCMath compatible left operand
+		 * @param string $rightOperand The BCMath compatible right operand
+		 * @param null $scale The scale to use for comparison. If omitted, the greater scale of both operands will be used. If operands have more decimals than the scale, they are ignored.
+		 * @return bool True if the left operand is greater than the right operand. Else false.
+		 */
+		public static function isGreaterThan($leftOperand, $rightOperand, $scale = null) {
+			return static::comp($leftOperand, $rightOperand, $scale) > 0;
+		}
+
+		/**
+		 * Returns whether the left operand is greater than or equal to the right operand
+		 * @param string $leftOperand The BCMath compatible left operand
+		 * @param string $rightOperand The BCMath compatible right operand
+		 * @param null $scale The scale to use for comparison. If omitted, the greater scale of both operands will be used. If operands have more decimals than the scale, they are ignored.
+		 * @return bool True if the left operand is greater than the or equal to right operand. Else false.
+		 */
+		public static function isGreaterThanOrEqual($leftOperand, $rightOperand, $scale = null) {
+			return static::comp($leftOperand, $rightOperand, $scale) >= 0;
+		}
+
+		/**
+		 * Returns whether the left operand is less than the right operand
+		 * @param string $leftOperand The BCMath compatible left operand
+		 * @param string $rightOperand The BCMath compatible right operand
+		 * @param null $scale The scale to use for comparison. If omitted, the greater scale of both operands will be used. If operands have more decimals than the scale, they are ignored.
+		 * @return bool True if the left operand is less than the right operand. Else false.
+		 */
+		public static function isLessThan($leftOperand, $rightOperand, $scale = null) {
+			return static::comp($leftOperand, $rightOperand, $scale) < 0;
+		}
+
+		/**
+		 * Returns whether the left operand is less than or equal to the right operand
+		 * @param string $leftOperand The BCMath compatible left operand
+		 * @param string $rightOperand The BCMath compatible right operand
+		 * @param null $scale The scale to use for comparison. If omitted, the greater scale of both operands will be used. If operands have more decimals than the scale, they are ignored.
+		 * @return bool True if the left operand is less than or equal to the right operand. Else false.
+		 */
+		public static function isLessThanOrEqual($leftOperand, $rightOperand, $scale = null) {
+			return static::comp($leftOperand, $rightOperand, $scale) <= 0;
 		}
 	}

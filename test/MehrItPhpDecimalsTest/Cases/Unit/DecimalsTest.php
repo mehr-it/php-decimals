@@ -391,4 +391,115 @@
 			$this->assertSame('-1.23', Decimals::sub('1.22', '2.45'));
 			$this->assertSame('1.23', Decimals::sub('3.63', '2.40'));
 		}
+
+		public function testMul() {
+			$this->assertSame('8', Decimals::mul('2', '4'));
+			$this->assertSame('1.5', Decimals::mul('0.5', '3'));
+			$this->assertSame('4.5', Decimals::mul('3', '1.5'));
+			$this->assertSame('-10', Decimals::mul('-5', '2'));
+			$this->assertSame('10', Decimals::mul('-5', '-2'));
+			$this->assertSame('0', Decimals::mul('0', '-2'));
+			$this->assertSame('0', Decimals::mul('0', '2'));
+			$this->assertSame('0.33333333', Decimals::mul('1', '0.33333333'));
+		}
+
+		public function testDiv() {
+			$this->assertSame('0.5', Decimals::div('2', '4'));
+			$this->assertSame('2', Decimals::div('4', '2'));
+			$this->assertSame('2', Decimals::div('5', '2.5'));
+			$this->assertSame('0.5', Decimals::div('2.5', '5'));
+			$this->assertSame('-1.25', Decimals::div('-2.5', '2'));
+			$this->assertSame('1.25', Decimals::div('-2.5', '-2'));
+			$this->assertSame('0', Decimals::div('0', '-2'));
+			$this->assertSame('0', Decimals::div('0', '1.5'));
+
+			$this->assertSame('0.' . str_repeat('3', Decimals::MUL_DEFAULT_SCALE), Decimals::div('1', '3'));
+			$this->assertSame('0.333', Decimals::div('1', '3', 3));
+		}
+
+		public function testDiv_byZero() {
+			$this->expectException(\DivisionByZeroError::class);
+
+			Decimals::div('1', '0');
+		}
+
+		public function testComp() {
+			$this->assertSame(-1, Decimals::comp('2', '4'));
+			$this->assertSame(-1, Decimals::comp('2.5', '4.5'));
+			$this->assertSame(-1, Decimals::comp('4', '4.5'));
+			$this->assertSame(1, Decimals::comp('4', '2'));
+			$this->assertSame(1, Decimals::comp('4.5', '2.5'));
+			$this->assertSame(1, Decimals::comp('4.5', '4'));
+			$this->assertSame(0, Decimals::comp('4', '4'));
+			$this->assertSame(-1, Decimals::comp('-4', '4'));
+			$this->assertSame(1, Decimals::comp('4', '-4'));
+			$this->assertSame(0, Decimals::comp('0', '0'));
+			$this->assertSame(0, Decimals::comp('0.5', '0.5'));
+			$this->assertSame(0, Decimals::comp('-0.5', '-0.5'));
+
+		}
+		
+		public function testIsGreaterThan() {
+			$this->assertSame(false, Decimals::isGreaterThan('2', '4'));
+			$this->assertSame(false, Decimals::isGreaterThan('2.5', '4.5'));
+			$this->assertSame(false, Decimals::isGreaterThan('4', '4.5'));
+			$this->assertSame(true, Decimals::isGreaterThan('4', '2'));
+			$this->assertSame(true, Decimals::isGreaterThan('4.5', '2.5'));
+			$this->assertSame(true, Decimals::isGreaterThan('4.5', '4'));
+			$this->assertSame(false, Decimals::isGreaterThan('4', '4'));
+			$this->assertSame(false, Decimals::isGreaterThan('-4', '4'));
+			$this->assertSame(true, Decimals::isGreaterThan('4', '-4'));
+			$this->assertSame(false, Decimals::isGreaterThan('0', '0'));
+			$this->assertSame(false, Decimals::isGreaterThan('0.5', '0.5'));
+			$this->assertSame(false, Decimals::isGreaterThan('-0.5', '-0.5'));
+
+		}
+		
+		public function testIsGreaterThanOrEqual() {
+			$this->assertSame(false, Decimals::isGreaterThanOrEqual('2', '4'));
+			$this->assertSame(false, Decimals::isGreaterThanOrEqual('2.5', '4.5'));
+			$this->assertSame(false, Decimals::isGreaterThanOrEqual('4', '4.5'));
+			$this->assertSame(true, Decimals::isGreaterThanOrEqual('4', '2'));
+			$this->assertSame(true, Decimals::isGreaterThanOrEqual('4.5', '2.5'));
+			$this->assertSame(true, Decimals::isGreaterThanOrEqual('4.5', '4'));
+			$this->assertSame(true, Decimals::isGreaterThanOrEqual('4', '4'));
+			$this->assertSame(false, Decimals::isGreaterThanOrEqual('-4', '4'));
+			$this->assertSame(true, Decimals::isGreaterThanOrEqual('4', '-4'));
+			$this->assertSame(true, Decimals::isGreaterThanOrEqual('0', '0'));
+			$this->assertSame(true, Decimals::isGreaterThanOrEqual('0.5', '0.5'));
+			$this->assertSame(true, Decimals::isGreaterThanOrEqual('-0.5', '-0.5'));
+
+		}
+
+		public function testIsLessThan() {
+			$this->assertSame(true, Decimals::isLessThan('2', '4'));
+			$this->assertSame(true, Decimals::isLessThan('2.5', '4.5'));
+			$this->assertSame(true, Decimals::isLessThan('4', '4.5'));
+			$this->assertSame(false, Decimals::isLessThan('4', '2'));
+			$this->assertSame(false, Decimals::isLessThan('4.5', '2.5'));
+			$this->assertSame(false, Decimals::isLessThan('4.5', '4'));
+			$this->assertSame(false, Decimals::isLessThan('4', '4'));
+			$this->assertSame(true, Decimals::isLessThan('-4', '4'));
+			$this->assertSame(false, Decimals::isLessThan('4', '-4'));
+			$this->assertSame(false, Decimals::isLessThan('0', '0'));
+			$this->assertSame(false, Decimals::isLessThan('0.5', '0.5'));
+			$this->assertSame(false, Decimals::isLessThan('-0.5', '-0.5'));
+
+		}
+
+		public function testIsLessThanOrEqual() {
+			$this->assertSame(true, Decimals::isLessThanOrEqual('2', '4'));
+			$this->assertSame(true, Decimals::isLessThanOrEqual('2.5', '4.5'));
+			$this->assertSame(true, Decimals::isLessThanOrEqual('4', '4.5'));
+			$this->assertSame(false, Decimals::isLessThanOrEqual('4', '2'));
+			$this->assertSame(false, Decimals::isLessThanOrEqual('4.5', '2.5'));
+			$this->assertSame(false, Decimals::isLessThanOrEqual('4.5', '4'));
+			$this->assertSame(true, Decimals::isLessThanOrEqual('4', '4'));
+			$this->assertSame(true, Decimals::isLessThanOrEqual('-4', '4'));
+			$this->assertSame(false, Decimals::isLessThanOrEqual('4', '-4'));
+			$this->assertSame(true, Decimals::isLessThanOrEqual('0', '0'));
+			$this->assertSame(true, Decimals::isLessThanOrEqual('0.5', '0.5'));
+			$this->assertSame(true, Decimals::isLessThanOrEqual('-0.5', '-0.5'));
+
+		}
 	}
