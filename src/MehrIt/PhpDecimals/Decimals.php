@@ -16,7 +16,7 @@
 		 * @return string The BCMath compatible number
 		 * @throws \InvalidArgumentException
 		 */
-		public static function parse($value, $decimalPoint = null) {
+		public static function parse(string $value, string $decimalPoint = null) {
 
 			// remove whitespaces
 			$parsedValue = trim($value);
@@ -76,7 +76,7 @@
 		 * @return string The rounded number
 		 * @throws \InvalidArgumentException
 		 */
-		public static function round($number, $precision = 0, $roundMode = PHP_ROUND_HALF_UP) {
+		public static function round(string $number, int $precision = 0, $roundMode = PHP_ROUND_HALF_UP) {
 
 			if ($precision < 0)
 				throw new \InvalidArgumentException('Precision must not be negative');
@@ -112,7 +112,7 @@
 		 * @param int $precision The number of decimals to keep
 		 * @return string The truncated number
 		 */
-		public static function truncate($number, $precision = 0) {
+		public static function truncate(string $number, int $precision = 0) {
 
 			// get difference in decimals
 			$diff = static::decimals($number) - $precision;
@@ -128,7 +128,7 @@
 		 * @param string $number The BCMath compatible number to normalize
 		 * @return string The normalized string
 		 */
-		public static function norm($number) {
+		public static function norm(string $number) {
 
 			if (!trim($number . ''))
 				return '0';
@@ -168,7 +168,7 @@
 		 * @param string $number The BCMath compatible number to get absolute value for
 		 * @return string The absolute value
 		 */
-		public static function abs($number) {
+		public static function abs(string $number) {
 			if ($number !== null && $number[0] == '-')
 				$number = substr($number, 1);
 
@@ -180,7 +180,7 @@
 		 * @param string $number The BCMath compatible number to get decimals for
 		 * @return int The number of decimals
 		 */
-		public static function decimals($number) {
+		public static function decimals(string $number) {
 
 			// get absolute value
 			if ($number !== null && $number[0] == '-')
@@ -200,7 +200,7 @@
 		 * @param string $number The BCMath compatible number to output
 		 * @return int|float The number as native data type
 		 */
-		public static function toNative($number) {
+		public static function toNative(string $number) {
 			return $number * 1; // we are using '.' as decimal point, which PHP always converts correctly to float or int, so we simply let PHP convert the string to a number
 		}
 
@@ -208,10 +208,10 @@
 		 * Adds two numbers
 		 * @param string $leftOperand The BCMath compatible left operand
 		 * @param string $rightOperand The BCMath compatible right operand
-		 * @param null $scale The scale to use for calculation. If omitted, the greater scale of both operands will be used
+		 * @param int|null $scale The scale to use for calculation. If omitted, the greater scale of both operands will be used
 		 * @return string The sum
 		 */
-		public static function add($leftOperand, $rightOperand, $scale = null) {
+		public static function add(string $leftOperand, string $rightOperand, int $scale = null) {
 
 			if ($scale === null)
 				$scale = max(static::decimals($leftOperand), static::decimals($rightOperand));
@@ -223,10 +223,10 @@
 		 * Subtracts two numbers
 		 * @param string $leftOperand The BCMath compatible left operand
 		 * @param string $rightOperand The BCMath compatible right operand
-		 * @param null $scale The scale to use for calculation. If omitted, the greater scale of both operands will be used
+		 * @param int|null $scale The scale to use for calculation. If omitted, the greater scale of both operands will be used
 		 * @return string The subtraction result
 		 */
-		public static function sub($leftOperand, $rightOperand, $scale = null) {
+		public static function sub(string $leftOperand, string $rightOperand, int $scale = null) {
 
 			if ($scale === null)
 				$scale = max(static::decimals($leftOperand), static::decimals($rightOperand));
@@ -238,11 +238,11 @@
 		 * Multiplies two numbers
 		 * @param string $leftOperand The BCMath compatible left operand
 		 * @param string $rightOperand The BCMath compatible right operand
-		 * @param null $scale The scale to use for calculation. If omitted the double of the greater scale of both operands will be used - but at least MUL_DEFAULT_SCALE
+		 * @param int|null $scale The scale to use for calculation. If omitted the double of the greater scale of both operands will be used - but at least MUL_DEFAULT_SCALE
 		 * incremented by one will be used - but at least MUL_DEFAULT_SCALE
 		 * @return string The multiplication result
 		 */
-		public static function mul($leftOperand, $rightOperand, $scale = null) {
+		public static function mul(string $leftOperand, string $rightOperand, int $scale = null) {
 
 			if ($scale === null)
 				$scale = max(static::decimals($leftOperand) * 2, static::decimals($rightOperand) * 2, static::MUL_DEFAULT_SCALE);
@@ -256,11 +256,11 @@
 		 * Divides two numbers
 		 * @param string $leftOperand The BCMath compatible left operand
 		 * @param string $rightOperand The BCMath compatible right operand
-		 * @param null $scale The scale to use for calculation. If omitted the double of the greater scale of both operands will be used - but at least MUL_DEFAULT_SCALE
+		 * @param int|null $scale The scale to use for calculation. If omitted the double of the greater scale of both operands will be used - but at least MUL_DEFAULT_SCALE
 		 * @return string The division result
 		 * @throws \DivisionByZeroError
 		 */
-		public static function div($leftOperand, $rightOperand, $scale = null) {
+		public static function div(string $leftOperand, string $rightOperand, int $scale = null) {
 
 			if ($scale === null)
 				$scale = max(static::decimals($leftOperand) * 2, static::decimals($rightOperand) * 2, static::MUL_DEFAULT_SCALE);
@@ -278,10 +278,10 @@
 		 * Compares two numbers
 		 * @param string $leftOperand The BCMath compatible left operand
 		 * @param string $rightOperand The BCMath compatible right operand
-		 * @param null $scale The scale to use for comparison. If omitted, the greater scale of both operands will be used. If operands have more decimals than the scale, they are ignored.
+		 * @param int|null $scale The scale to use for comparison. If omitted, the greater scale of both operands will be used. If operands have more decimals than the scale, they are ignored.
 		 * @return int 0 if both numbers are equal. 1 if the left operand is greater than the right operand. Else -1
 		 */
-		public static function comp($leftOperand, $rightOperand, $scale = null) {
+		public static function comp(string $leftOperand, string $rightOperand, int $scale = null) {
 
 			if ($scale === null)
 				$scale = max(static::decimals($leftOperand), static::decimals($rightOperand));
@@ -293,10 +293,10 @@
 		 * Returns whether the left operand is greater than the right operand
 		 * @param string $leftOperand The BCMath compatible left operand
 		 * @param string $rightOperand The BCMath compatible right operand
-		 * @param null $scale The scale to use for comparison. If omitted, the greater scale of both operands will be used. If operands have more decimals than the scale, they are ignored.
+		 * @param int|null $scale The scale to use for comparison. If omitted, the greater scale of both operands will be used. If operands have more decimals than the scale, they are ignored.
 		 * @return bool True if the left operand is greater than the right operand. Else false.
 		 */
-		public static function isGreaterThan($leftOperand, $rightOperand, $scale = null) {
+		public static function isGreaterThan(string $leftOperand, string $rightOperand, int $scale = null) {
 			return static::comp($leftOperand, $rightOperand, $scale) > 0;
 		}
 
@@ -304,10 +304,10 @@
 		 * Returns whether the left operand is greater than or equal to the right operand
 		 * @param string $leftOperand The BCMath compatible left operand
 		 * @param string $rightOperand The BCMath compatible right operand
-		 * @param null $scale The scale to use for comparison. If omitted, the greater scale of both operands will be used. If operands have more decimals than the scale, they are ignored.
+		 * @param int|null $scale The scale to use for comparison. If omitted, the greater scale of both operands will be used. If operands have more decimals than the scale, they are ignored.
 		 * @return bool True if the left operand is greater than the or equal to right operand. Else false.
 		 */
-		public static function isGreaterThanOrEqual($leftOperand, $rightOperand, $scale = null) {
+		public static function isGreaterThanOrEqual(string $leftOperand, string $rightOperand, int $scale = null) {
 			return static::comp($leftOperand, $rightOperand, $scale) >= 0;
 		}
 
@@ -315,10 +315,10 @@
 		 * Returns whether the left operand is less than the right operand
 		 * @param string $leftOperand The BCMath compatible left operand
 		 * @param string $rightOperand The BCMath compatible right operand
-		 * @param null $scale The scale to use for comparison. If omitted, the greater scale of both operands will be used. If operands have more decimals than the scale, they are ignored.
+		 * @param int|null $scale The scale to use for comparison. If omitted, the greater scale of both operands will be used. If operands have more decimals than the scale, they are ignored.
 		 * @return bool True if the left operand is less than the right operand. Else false.
 		 */
-		public static function isLessThan($leftOperand, $rightOperand, $scale = null) {
+		public static function isLessThan(string $leftOperand, string $rightOperand, int $scale = null) {
 			return static::comp($leftOperand, $rightOperand, $scale) < 0;
 		}
 
@@ -326,10 +326,10 @@
 		 * Returns whether the left operand is less than or equal to the right operand
 		 * @param string $leftOperand The BCMath compatible left operand
 		 * @param string $rightOperand The BCMath compatible right operand
-		 * @param null $scale The scale to use for comparison. If omitted, the greater scale of both operands will be used. If operands have more decimals than the scale, they are ignored.
+		 * @param int|null $scale The scale to use for comparison. If omitted, the greater scale of both operands will be used. If operands have more decimals than the scale, they are ignored.
 		 * @return bool True if the left operand is less than or equal to the right operand. Else false.
 		 */
-		public static function isLessThanOrEqual($leftOperand, $rightOperand, $scale = null) {
+		public static function isLessThanOrEqual(string $leftOperand, string $rightOperand, int $scale = null) {
 			return static::comp($leftOperand, $rightOperand, $scale) <= 0;
 		}
 	}
