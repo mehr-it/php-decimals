@@ -438,6 +438,17 @@
 			$this->assertSame(0, Decimals::comp('-0.5', '-0.5'));
 
 		}
+
+		public function testisEqual() {
+			$this->assertSame(true, Decimals::isEqual('2', '2'));
+			$this->assertSame(true, Decimals::isEqual('02', '2'));
+			$this->assertSame(true, Decimals::isEqual('2', '2.00'));
+			$this->assertSame(false, Decimals::isEqual('2', '1'));
+			$this->assertSame(false, Decimals::isEqual('2', '-2'));
+			$this->assertSame(false, Decimals::isEqual('2', '2.01'));
+			$this->assertSame(true, Decimals::isEqual('2', '2.01', 1));
+
+		}
 		
 		public function testIsGreaterThan() {
 			$this->assertSame(false, Decimals::isGreaterThan('2', '4'));

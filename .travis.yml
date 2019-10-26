@@ -1,0 +1,27 @@
+cache:
+  directories:
+    - $HOME/.composer/cache
+
+language: php
+
+env:
+  global:
+    - COVERAGE=1
+
+matrix:
+  include:
+    - php: 7.1
+    - php: 7.2
+    - php: 7.3
+  fast_finish: true
+
+before_script:
+  - composer config discard-changes true
+
+before_install:
+  - travis_retry composer self-update
+
+install:
+  - travis_retry composer update ${COMPOSER_FLAGS} --prefer-dist --no-interaction --no-suggest
+
+script: vendor/bin/phpunit
