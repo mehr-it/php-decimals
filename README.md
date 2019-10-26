@@ -1,4 +1,7 @@
 # PHP Decimals
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/mehr-it/php-decimals.svg?style=flat-square)](https://packagist.org/packages/mehr-it/php-decimals)
+[![Build Status](https://travis-ci.org/mehr-it/php-decimals.svg?branch=master)](https://travis-ci.org/mehr-it/php-decimals)
+
 This library is a small wrapper around PHP's **[BCMath](https://www.php.net/manual/en/book.bc.php)** extension. BCMath 
 implements arbitrary precision mathematics, it's usage is not very 
 comfortable.
