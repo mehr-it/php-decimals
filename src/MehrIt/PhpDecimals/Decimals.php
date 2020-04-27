@@ -3,6 +3,9 @@
 	namespace MehrIt\PhpDecimals;
 
 
+	use DivisionByZeroError;
+	use InvalidArgumentException;
+
 	class Decimals
 	{
 		const MUL_DEFAULT_SCALE = 16;
@@ -14,7 +17,7 @@
 		 * @param string $value The value to parse. It must not contain any thousand separators! Only decimal representations are accepted.
 		 * @param string|null $decimalPoint The decimal point. If omitted auto detection is used.
 		 * @return string The BCMath compatible number
-		 * @throws \InvalidArgumentException
+		 * @throws InvalidArgumentException
 		 */
 		public static function parse(string $value, string $decimalPoint = null): string {
 
@@ -60,8 +63,12 @@
 
 			// check for valid number
 			if ($parsedValue !== '') {
-				if ($replaceCount > 1 || str_replace(array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'), '', ($parsedValue[0] == '-' ? substr($parsedValue, 1) : $parsedValue)) !== '')
-					throw new \InvalidArgumentException("\"$value\" is not a valid number");
+				if ($replaceCount > 1 ||
+				    !in_array(str_replace(array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'), '', ($parsedValue[0] == '-' ? substr($parsedValue, 1) : $parsedValue)), ['', '.'], true) ||
+				    ($replaceCount === 0 && strpos($parsedValue, '.') !== false)
+				) {
+					throw new InvalidArgumentException("\"$value\" is not a valid number");
+				}
 			}
 
 
@@ -74,14 +81,14 @@
 		 * @param int $precision The precision to round to
 		 * @param int $roundMode PHP_ROUND_HALF_UP and PHP_ROUND_HALF_DOWN are supported.
 		 * @return string The rounded number
-		 * @throws \InvalidArgumentException
+		 * @throws InvalidArgumentException
 		 */
 		public static function round(string $number, int $precision = 0, $roundMode = PHP_ROUND_HALF_UP): string {
 
 			if ($precision < 0)
-				throw new \InvalidArgumentException('Precision must not be negative');
+				throw new InvalidArgumentException('Precision must not be negative');
 			if ($roundMode !== PHP_ROUND_HALF_UP && $roundMode != PHP_ROUND_HALF_DOWN)
-				throw new \InvalidArgumentException('Invalid round mode "' . $roundMode . '"');
+				throw new InvalidArgumentException('Invalid round mode "' . $roundMode . '"');
 
 			if (strpos($number, '.') !== false) {
 				switch ($roundMode) {
@@ -258,7 +265,7 @@
 		 * @param string $rightOperand The BCMath compatible right operand
 		 * @param int|null $scale The scale to use for calculation. If omitted the double of the greater scale of both operands will be used - but at least MUL_DEFAULT_SCALE
 		 * @return string The division result
-		 * @throws \DivisionByZeroError
+		 * @throws DivisionByZeroError
 		 */
 		public static function div(string $leftOperand, string $rightOperand, int $scale = null): string {
 
@@ -268,7 +275,7 @@
 			$res = @bcdiv($leftOperand, $rightOperand, $scale);
 
 			if ($res === null)
-				throw new \DivisionByZeroError('Divisor is 0');
+				throw new DivisionByZeroError('Divisor is 0');
 
 			return static::norm($res);
 

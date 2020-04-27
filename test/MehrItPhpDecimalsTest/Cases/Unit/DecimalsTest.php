@@ -323,6 +323,22 @@
 			Decimals::parse('12.223,2');
 		}
 
+		public function testParse_InvalidNumber_dotButOtherDecimalChar() {
+
+			$this->expectException(\InvalidArgumentException::class);
+
+
+			Decimals::parse('12.223', ',');
+		}
+
+		public function testParse_InvalidNumber_dotTogetherWithOtherDecimalChar() {
+
+			$this->expectException(\InvalidArgumentException::class);
+
+
+			Decimals::parse('12.223,45', ',');
+		}
+
 		public function testParse_Float_en() {
 			$this->withLocale('en_US.UTF-8', function () {
 				$this->assertSame('123.45', Decimals::parse((string)123.45));
