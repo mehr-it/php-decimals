@@ -21,6 +21,7 @@
 			'>'   => true,
 			'=='  => true,
 			'='   => true,
+			'!='  => true,
 			'<=>' => true,
 		];
 
@@ -34,6 +35,7 @@
 				'>'   => true,
 				'=='  => true,
 				'='   => true,
+				'!='  => true,
 				'<=>' => true,
 			],
 			'-'   => [
@@ -45,6 +47,7 @@
 				'>'   => true,
 				'=='  => true,
 				'='   => true,
+				'!='  => true,
 				'<=>' => true,
 			],
 			'*'   => self::ALLOWED_EXPRESSION_OPERATORS,
@@ -55,6 +58,7 @@
 			'>'   => [],
 			'=='  => [],
 			'='   => [],
+			'!='  => [],
 			'<=>' => [],
 		];
 
@@ -112,6 +116,9 @@
 					case '==':
 					case '=':
 						$left = Decimals::isEqual($left, $right);
+						break;
+					case '!=':
+						$left = Decimals::isNotEqual($left, $right);
 						break;
 					case '<=>':
 						$left = Decimals::comp($left, $right);
@@ -463,5 +470,16 @@
 		 */
 		public static function isEqual(string $leftOperand, string $rightOperand, int $scale = null): bool {
 			return static::comp($leftOperand, $rightOperand, $scale) === 0;
+		}
+
+		/**
+		 * Returns whether both operands are not equal
+		 * @param string $leftOperand The BCMath compatible left operand
+		 * @param string $rightOperand The BCMath compatible right operand
+		 * @param int|null $scale The scale to use for comparison. If omitted, the greater scale of both operands will be used. If operands have more decimals than the scale, they are ignored.
+		 * @return bool True if both operands are not equal. Else false.
+		 */
+		public static function isNotEqual(string $leftOperand, string $rightOperand, int $scale = null): bool {
+			return static::comp($leftOperand, $rightOperand, $scale) !== 0;
 		}
 	}

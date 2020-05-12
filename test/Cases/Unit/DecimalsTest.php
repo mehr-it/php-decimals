@@ -455,7 +455,7 @@
 
 		}
 
-		public function testisEqual() {
+		public function testIsEqual() {
 			$this->assertSame(true, Decimals::isEqual('2', '2'));
 			$this->assertSame(true, Decimals::isEqual('02', '2'));
 			$this->assertSame(true, Decimals::isEqual('2', '2.00'));
@@ -463,6 +463,17 @@
 			$this->assertSame(false, Decimals::isEqual('2', '-2'));
 			$this->assertSame(false, Decimals::isEqual('2', '2.01'));
 			$this->assertSame(true, Decimals::isEqual('2', '2.01', 1));
+
+		}
+
+		public function testIsNotEqual() {
+			$this->assertSame(!true, Decimals::isNotEqual('2', '2'));
+			$this->assertSame(!true, Decimals::isNotEqual('02', '2'));
+			$this->assertSame(!true, Decimals::isNotEqual('2', '2.00'));
+			$this->assertSame(!false, Decimals::isNotEqual('2', '1'));
+			$this->assertSame(!false, Decimals::isNotEqual('2', '-2'));
+			$this->assertSame(!false, Decimals::isNotEqual('2', '2.01'));
+			$this->assertSame(!true, Decimals::isNotEqual('2', '2.01', 1));
 
 		}
 		
@@ -606,6 +617,10 @@
 			$this->assertSame(false, Decimals::expr('20.5', '==', '20.4'));
 			$this->assertSame(true, Decimals::expr('20.5', '==', '20.5'));
 			$this->assertSame(false, Decimals::expr('20.5', '==', '20.6'));
+
+			$this->assertSame(true, Decimals::expr('20.5', '!=', '20.4'));
+			$this->assertSame(false, Decimals::expr('20.5', '!=', '20.5'));
+			$this->assertSame(true, Decimals::expr('20.5', '!=', '20.6'));
 
 			$this->assertSame(1, Decimals::expr('20.5', '<=>', '20.4'));
 			$this->assertSame(0, Decimals::expr('20.5', '<=>', '20.5'));

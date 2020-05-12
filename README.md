@@ -152,6 +152,7 @@ To make code more readable, the following functions handle specific
 comparision cases:
 
     Decimals::isEqual('1.5', '6');               // = false
+    Decimals::isNotEqual('1.5', '6');            // = true
     Decimals::isGreaterThan('1.5', '6');         // = false
     Decimals::isGreaterThanOrEqual('1.5', '6');  // = false
     Decimals::isLessThan('1.5', '6');            // = true
