@@ -614,6 +614,9 @@
 
 		}
 
+		/**
+		 * @doesNotPerformAssertions
+		 */
 		public function testExpr_invalidOperatorSequence() {
 
 			$this->expectNotToPerformAssertions();
@@ -724,6 +727,9 @@
 
 		}
 
+		/**
+		 * @doesNotPerformAssertions
+		 */
 		public function testExpr_invalidOperator() {
 
 			$this->expectNotToPerformAssertions();

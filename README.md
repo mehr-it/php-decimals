@@ -171,6 +171,28 @@ comparision cases:
     Decimals::decimals('78.889'); // = 3
     Decimals::decimals('78.800'); // = 3
  
+
+## Using expressions
+Applying multiple operations can lead to unreadable code:
+
+    $result = Decimals::add(Decimals::mul($a, $b), $c);
+    
+The `Decimals::expr()` method (or the  helper `expr()`) can help here. The same operations
+as above can be written as follows:
+
+    $result = Decimals::expr($a, '*', $b, '+', $c);
+    
+    // or using helper
+    $result = expr($a, '*', $b, '+', $c);
+    
+This comes with the drawback of little performance overhead, but is very easy to 
+read.
+
+**Expressions are always evaluated from left to right.** If an expression is given
+which would break mathematical or logical operator precedence, an exception is thrown. 
+
+    
+ 
 ## TODO
 
 * add wrapper for `bcmod()`, `bcpow()`, `bcpowmod()` and `bcsqrt()`
