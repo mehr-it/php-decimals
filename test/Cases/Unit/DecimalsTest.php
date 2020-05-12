@@ -619,7 +619,8 @@
 		 */
 		public function testExpr_invalidOperatorSequence() {
 
-			$this->expectNotToPerformAssertions();
+			if (method_exists($this, 'expectNotToPerformAssertions'))
+				$this->expectNotToPerformAssertions();
 
 			$args = [
 				['5', '+', '9', '*', '2'],
@@ -732,7 +733,8 @@
 		 */
 		public function testExpr_invalidOperator() {
 
-			$this->expectNotToPerformAssertions();
+			if (method_exists($this, 'expectNotToPerformAssertions'))
+				$this->expectNotToPerformAssertions();
 
 			$args = [
 				['5', '5.0', '9',],
