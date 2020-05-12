@@ -10,6 +10,120 @@
 	{
 		const MUL_DEFAULT_SCALE = 16;
 
+		const ALLOWED_EXPRESSION_OPERATORS = [
+			'+'   => true,
+			'-'   => true,
+			'*'   => true,
+			'/'   => true,
+			'<'   => true,
+			'<='  => true,
+			'>='  => true,
+			'>'   => true,
+			'=='  => true,
+			'='   => true,
+			'<=>' => true,
+		];
+
+		const ALLOWED_EXPRESSION_OPERATORS_AFTER_OPERATOR = [
+			'+'   => [
+				'+'   => true,
+				'-'   => true,
+				'<'   => true,
+				'<='  => true,
+				'>='  => true,
+				'>'   => true,
+				'=='  => true,
+				'='   => true,
+				'<=>' => true,
+			],
+			'-'   => [
+				'+'   => true,
+				'-'   => true,
+				'<'   => true,
+				'<='  => true,
+				'>='  => true,
+				'>'   => true,
+				'=='  => true,
+				'='   => true,
+				'<=>' => true,
+			],
+			'*'   => self::ALLOWED_EXPRESSION_OPERATORS,
+			'/'   => self::ALLOWED_EXPRESSION_OPERATORS,
+			'<'   => [],
+			'<='  => [],
+			'>='  => [],
+			'>'   => [],
+			'=='  => [],
+			'='   => [],
+			'<=>' => [],
+		];
+
+		/**
+		 * Evaluates the given expression. Expressions are only evaluated left to right. Expressions for which left to right evaluation is not logically correct will throw an exception
+		 * @param mixed ...$args The expression operands and expression.
+		 * @return bool|int|string The expression result.
+		 */
+		public static function expr(...$args) {
+			$left  = array_shift($args);
+
+			$lastOperator     = null;
+			$allowedOperators = self::ALLOWED_EXPRESSION_OPERATORS;
+
+			while (($op = array_shift($args)) !== null) {
+
+				if (!($allowedOperators[$op] ?? false)) {
+
+					if (self::ALLOWED_EXPRESSION_OPERATORS[$op] ?? false)
+						throw new InvalidArgumentException("Failed to evaluate expression. Operator \"{$lastOperator}\" followed by operator \"{$op}\" is not supported.");
+					else
+						throw new InvalidArgumentException("Invalid operator \"{$op}\"");
+				}
+
+				$right  = array_shift($args);
+
+				if ($right === null)
+					throw new InvalidArgumentException("Right operand missing after {$op}");
+
+				switch($op) {
+					case '+':
+						$left = Decimals::add($left, $right);
+						break;
+					case '-':
+						$left = Decimals::sub($left, $right);
+						break;
+					case '*':
+						$left = Decimals::mul($left, $right);
+						break;
+					case '/':
+						$left = Decimals::div($left, $right);
+						break;
+					case '<':
+						$left = Decimals::isLessThan($left, $right);
+						break;
+					case '<=':
+						$left = Decimals::isLessThanOrEqual($left, $right);
+						break;
+					case '>=':
+						$left = Decimals::isGreaterThanOrEqual($left, $right);
+						break;
+					case '>':
+						$left = Decimals::isGreaterThan($left, $right);
+						break;
+					case '==':
+					case '=':
+						$left = Decimals::isEqual($left, $right);
+						break;
+					case '<=>':
+						$left = Decimals::comp($left, $right);
+						break;
+				}
+
+				$allowedOperators = self::ALLOWED_EXPRESSION_OPERATORS_AFTER_OPERATOR[$op];
+				$lastOperator     = $op;
+			}
+
+			return $left;
+		}
 
 		/**
 		 * Parses a BCMath compatible number from the given string. The decimal separator is automatically detected if not passed. If auto detection is not possible,

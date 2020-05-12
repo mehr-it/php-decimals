@@ -529,4 +529,222 @@
 			$this->assertSame(true, Decimals::isLessThanOrEqual('-0.5', '-0.5'));
 
 		}
+
+		public function testExpr() {
+
+			$this->assertSame('78.2',  Decimals::expr('78.2'));
+
+			$this->assertSame('79.65',  Decimals::expr('78.2', '+', '1.45'));
+			$this->assertSame('79.66',  Decimals::expr('78.2', '+', '1.45', '+', '0.01'));
+			$this->assertSame('79.64',  Decimals::expr('78.2', '+', '1.45', '-', '0.01'));
+			$this->assertSame(true,  Decimals::expr('78.2', '+', '1.45', '<', '79.66'));
+			$this->assertSame(true,  Decimals::expr('78.2', '+', '1.45', '<=', '79.66'));
+			$this->assertSame(true,  Decimals::expr('78.2', '+', '1.45', '=', '79.65'));
+			$this->assertSame(true,  Decimals::expr('78.2', '+', '1.45', '==', '79.65'));
+			$this->assertSame(true,  Decimals::expr('78.2', '+', '1.45', '>=', '79.64'));
+			$this->assertSame(true,  Decimals::expr('78.2', '+', '1.45', '>', '79.64'));
+			$this->assertSame(1,  Decimals::expr('78.2', '+', '1.45', '<=>', '79.64'));
+
+			$this->assertSame('78.2',  Decimals::expr('79.65', '-', '1.45'));
+			$this->assertSame('78.19',  Decimals::expr('79.65', '-', '1.45', '-', '0.01'));
+			$this->assertSame('78.21',  Decimals::expr('79.65', '-', '1.45', '+', '0.01'));
+			$this->assertSame(true,  Decimals::expr('79.65', '-', '1.45', '<', '78.3'));
+			$this->assertSame(true,  Decimals::expr('79.65', '-', '1.45', '<=', '78.3'));
+			$this->assertSame(true,  Decimals::expr('79.65', '-', '1.45', '=', '78.2'));
+			$this->assertSame(true,  Decimals::expr('79.65', '-', '1.45', '==', '78.2'));
+			$this->assertSame(true,  Decimals::expr('79.65', '-', '1.45', '>=', '78.1'));
+			$this->assertSame(true,  Decimals::expr('79.65', '-', '1.45', '>', '78.1'));
+			$this->assertSame(1,  Decimals::expr('79.65', '-', '1.45', '<=>', '78.1'));
+
+			$this->assertSame('10.25', Decimals::expr('20.5', '*', '0.5'));
+			$this->assertSame('30.75', Decimals::expr('20.5', '*', '0.5', '*', '3'));
+			$this->assertSame('41', Decimals::expr('20.5', '*', '0.5', '/', '0.25'));
+			$this->assertSame('10.35', Decimals::expr('20.5', '*', '0.5', '+', '0.1'));
+			$this->assertSame('10.15', Decimals::expr('20.5', '*', '0.5', '-', '0.1'));
+			$this->assertSame(true, Decimals::expr('20.5', '*', '0.5', '<', '10.3'));
+			$this->assertSame(true, Decimals::expr('20.5', '*', '0.5', '<=', '10.3'));
+			$this->assertSame(true, Decimals::expr('20.5', '*', '0.5', '=', '10.25'));
+			$this->assertSame(true, Decimals::expr('20.5', '*', '0.5', '==', '10.25'));
+			$this->assertSame(true, Decimals::expr('20.5', '*', '0.5', '>=', '10.2'));
+			$this->assertSame(true, Decimals::expr('20.5', '*', '0.5', '>', '10.2'));
+			$this->assertSame(1, Decimals::expr('20.5', '*', '0.5', '<=>', '10.2'));
+
+			$this->assertSame('10.25', Decimals::expr('20.5', '/', '2'));
+			$this->assertSame('41', Decimals::expr('20.5', '/', '2', '/', '0.25'));
+			$this->assertSame('30.75', Decimals::expr('20.5', '/', '2', '*', '3'));
+			$this->assertSame('10.35', Decimals::expr('20.5', '/', '2', '+', '0.1'));
+			$this->assertSame('10.15', Decimals::expr('20.5', '/', '2', '-', '0.1'));
+			$this->assertSame(true, Decimals::expr('20.5', '/', '2', '<', '10.3'));
+			$this->assertSame(true, Decimals::expr('20.5', '/', '2', '<=', '10.3'));
+			$this->assertSame(true, Decimals::expr('20.5', '/', '2', '=', '10.25'));
+			$this->assertSame(true, Decimals::expr('20.5', '/', '2', '==', '10.25'));
+			$this->assertSame(true, Decimals::expr('20.5', '/', '2', '>=', '10.2'));
+			$this->assertSame(true, Decimals::expr('20.5', '/', '2', '>', '10.2'));
+			$this->assertSame(1, Decimals::expr('20.5', '/', '2', '<=>', '10.2'));
+
+			$this->assertSame(true, Decimals::expr('20.5', '<', '20.6'));
+			$this->assertSame(false, Decimals::expr('20.5', '<', '20.5'));
+			$this->assertSame(false, Decimals::expr('20.5', '<', '20.4'));
+
+			$this->assertSame(true, Decimals::expr('20.5', '<=', '20.6'));
+			$this->assertSame(true, Decimals::expr('20.5', '<=', '20.5'));
+			$this->assertSame(false, Decimals::expr('20.5', '<=', '20.4'));
+
+			$this->assertSame(true, Decimals::expr('20.5', '>=', '20.4'));
+			$this->assertSame(true, Decimals::expr('20.5', '>=', '20.5'));
+			$this->assertSame(false, Decimals::expr('20.5', '>=', '20.6'));
+
+			$this->assertSame(true, Decimals::expr('20.5', '>', '20.4'));
+			$this->assertSame(false, Decimals::expr('20.5', '>', '20.5'));
+			$this->assertSame(false, Decimals::expr('20.5', '>', '20.6'));
+
+
+			$this->assertSame(false, Decimals::expr('20.5', '=', '20.4'));
+			$this->assertSame(true, Decimals::expr('20.5', '=', '20.5'));
+			$this->assertSame(false, Decimals::expr('20.5', '=', '20.6'));
+
+			$this->assertSame(false, Decimals::expr('20.5', '==', '20.4'));
+			$this->assertSame(true, Decimals::expr('20.5', '==', '20.5'));
+			$this->assertSame(false, Decimals::expr('20.5', '==', '20.6'));
+
+			$this->assertSame(1, Decimals::expr('20.5', '<=>', '20.4'));
+			$this->assertSame(0, Decimals::expr('20.5', '<=>', '20.5'));
+			$this->assertSame(-1, Decimals::expr('20.5', '<=>', '20.6'));
+
+
+		}
+
+		public function testExpr_invalidOperatorSequence() {
+
+			$this->expectNotToPerformAssertions();
+
+			$args = [
+				['5', '+', '9', '*', '2'],
+				['5', '+', '9', '/', '2'],
+
+				['5', '<', '9', '/', '2'],
+				['5', '<=', '9', '/', '2'],
+				['5', '=', '9', '/', '2'],
+				['5', '==', '9', '/', '2'],
+				['5', '>=', '9', '/', '2'],
+				['5', '>', '9', '/', '2'],
+				['5', '<=>', '9', '/', '2'],
+
+				['5', '<', '9', '*', '2'],
+				['5', '<=', '9', '*', '2'],
+				['5', '=', '9', '*', '2'],
+				['5', '==', '9', '*', '2'],
+				['5', '>=', '9', '*', '2'],
+				['5', '>', '9', '*', '2'],
+				['5', '<=>', '9', '*', '2'],
+
+				['5', '<', '9', '+', '2'],
+				['5', '<=', '9', '+', '2'],
+				['5', '=', '9', '+', '2'],
+				['5', '==', '9', '+', '2'],
+				['5', '>=', '9', '+', '2'],
+				['5', '>', '9', '+', '2'],
+				['5', '<=>', '9', '+', '2'],
+
+				['5', '<', '9', '-', '2'],
+				['5', '<=', '9', '-', '2'],
+				['5', '=', '9', '-', '2'],
+				['5', '==', '9', '-', '2'],
+				['5', '>=', '9', '-', '2'],
+				['5', '>', '9', '-', '2'],
+				['5', '<=>', '9', '-', '2'],
+
+				['5', '<', '9', '<', '2'],
+				['5', '<=', '9', '<', '2'],
+				['5', '=', '9', '<', '2'],
+				['5', '==', '9', '<', '2'],
+				['5', '>=', '9', '<', '2'],
+				['5', '>', '9', '<', '2'],
+				['5', '<=>', '9', '<', '2'],
+
+				['5', '<', '9', '<=', '2'],
+				['5', '<=', '9', '<=', '2'],
+				['5', '=', '9', '<=', '2'],
+				['5', '==', '9', '<=', '2'],
+				['5', '>=', '9', '<=', '2'],
+				['5', '>', '9', '<=', '2'],
+				['5', '<=>', '9', '<=', '2'],
+
+				['5', '<', '9', '=', '2'],
+				['5', '<=', '9', '=', '2'],
+				['5', '=', '9', '=', '2'],
+				['5', '==', '9', '=', '2'],
+				['5', '>=', '9', '=', '2'],
+				['5', '>', '9', '=', '2'],
+				['5', '<=>', '9', '=', '2'],
+
+				['5', '<', '9', '==', '2'],
+				['5', '<=', '9', '==', '2'],
+				['5', '=', '9', '==', '2'],
+				['5', '==', '9', '==', '2'],
+				['5', '>=', '9', '==', '2'],
+				['5', '>', '9', '==', '2'],
+				['5', '<=>', '9', '==', '2'],
+
+				['5', '<', '9', '>=', '2'],
+				['5', '<=', '9', '>=', '2'],
+				['5', '=', '9', '>=', '2'],
+				['5', '==', '9', '>=', '2'],
+				['5', '>=', '9', '>=', '2'],
+				['5', '>', '9', '>=', '2'],
+				['5', '<=>', '9', '>=', '2'],
+
+				['5', '<', '9', '>', '2'],
+				['5', '<=', '9', '>', '2'],
+				['5', '=', '9', '>', '2'],
+				['5', '==', '9', '>', '2'],
+				['5', '>=', '9', '>', '2'],
+				['5', '>', '9', '>', '2'],
+				['5', '<=>', '9', '>', '2'],
+
+				['5', '<', '9', '<=>', '2'],
+				['5', '<=', '9', '<=>', '2'],
+				['5', '=', '9', '<=>', '2'],
+				['5', '==', '9', '<=>', '2'],
+				['5', '>=', '9', '<=>', '2'],
+				['5', '>', '9', '<=>', '2'],
+				['5', '<=>', '9', '<=>', '2'],
+			];
+
+			foreach($args as $currArgs) {
+				try {
+					Decimals::expr(...$currArgs);
+
+					$this->fail('Expression "' . implode(' ', $currArgs) . '" did not throw the expected exception.');
+				}
+				catch (\InvalidArgumentException $ex) {
+
+				}
+			}
+
+		}
+
+		public function testExpr_invalidOperator() {
+
+			$this->expectNotToPerformAssertions();
+
+			$args = [
+				['5', '5.0', '9',],
+				['5', '', '9'],
+				['5', '**', '9'],
+				['5', '^', '9'],
+			];
+
+			foreach($args as $currArgs) {
+				try {
+					Decimals::expr(...$currArgs);
+
+					$this->fail('Expression "' . implode(' ', $currArgs) . '" did not throw the expected exception.');
+				}
+				catch (\InvalidArgumentException $ex) {
+
+				}
+			}
+
+		}
 	}
