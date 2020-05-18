@@ -59,6 +59,9 @@ Any operations can be accessed using the static methods of the `Decimals` class:
     // modulus: 5 % 2
     Decimals::mod('5', '2');
     
+    // pow: 5 ** 2
+    Decimals::pow('5', '2');
+    
 For `add()` and `sub()` the result precision is automatically set to the largest
 number of decimals of either operands. This is sufficient for any operation.
 

@@ -454,6 +454,21 @@
 			Decimals::mod('1', '0');
 		}
 
+		public function testPow() {
+			$this->assertSame('100', Decimals::pow('10', '2'));
+			$this->assertSame('27', Decimals::pow('3', '3'));
+			$this->assertSame('2.25', Decimals::pow('1.5', '2'));
+			$this->assertSame('2.25', Decimals::pow('-1.5', '2'));
+			$this->assertSame('1', Decimals::pow('9', '0'));
+		}
+
+		public function testPow_fractional() {
+
+			$this->expectException(\InvalidArgumentException::class);
+
+			Decimals::pow('9', '0.5');
+		}
+
 		public function testComp() {
 			$this->assertSame(-1, Decimals::comp('2', '4'));
 			$this->assertSame(-1, Decimals::comp('2.5', '4.5'));
@@ -609,6 +624,22 @@
 			$this->assertSame(true, Decimals::expr('20.5', '/', '2', '>=', '10.2'));
 			$this->assertSame(true, Decimals::expr('20.5', '/', '2', '>', '10.2'));
 			$this->assertSame(1, Decimals::expr('20.5', '/', '2', '<=>', '10.2'));
+
+			$this->assertSame('100', Decimals::expr('10', '**', '2'));
+			$this->assertSame('10000', Decimals::expr('10', '**', '2', '**', '2'));
+			$this->assertSame('102', Decimals::expr('10', '**', '2', '+', '2'));
+			$this->assertSame('98', Decimals::expr('10', '**', '2', '-', '2'));
+			$this->assertSame('200', Decimals::expr('10', '**', '2', '*', '2'));
+			$this->assertSame('50', Decimals::expr('10', '**', '2', '/', '2'));
+			$this->assertSame('1', Decimals::expr('10', '**', '2', '%', '99'));
+			$this->assertSame(true, Decimals::expr('10', '**', '2', '<', '101'));
+			$this->assertSame(true, Decimals::expr('10', '**', '2', '<=', '101'));
+			$this->assertSame(true, Decimals::expr('10', '**', '2', '=', '100'));
+			$this->assertSame(true, Decimals::expr('10', '**', '2', '==', '100'));
+			$this->assertSame(true, Decimals::expr('10', '**', '2', '>=', '99'));
+			$this->assertSame(true, Decimals::expr('10', '**', '2', '>', '99'));
+			$this->assertSame(1, Decimals::expr('10', '**', '2', '<=>', '99'));
+
 
 			$this->assertSame(true, Decimals::expr('20.5', '<', '20.6'));
 			$this->assertSame(false, Decimals::expr('20.5', '<', '20.5'));
@@ -783,7 +814,7 @@
 			$args = [
 				['5', '5.0', '9',],
 				['5', '', '9'],
-				['5', '**', '9'],
+				['5', '&&', '9'],
 				['5', '^', '9'],
 			];
 

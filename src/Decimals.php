@@ -24,6 +24,7 @@
 			'!='  => true,
 			'<=>' => true,
 			'%'   => true,
+			'**'  => true,
 		];
 
 		const ALLOWED_EXPRESSION_OPERATORS_AFTER_OPERATOR = [
@@ -51,9 +52,38 @@
 				'!='  => true,
 				'<=>' => true,
 			],
-			'*'   => self::ALLOWED_EXPRESSION_OPERATORS,
-			'/'   => self::ALLOWED_EXPRESSION_OPERATORS,
+			'*'   => [
+				'+'   => true,
+				'-'   => true,
+				'*'   => true,
+				'/'   => true,
+				'<'   => true,
+				'<='  => true,
+				'>='  => true,
+				'>'   => true,
+				'=='  => true,
+				'='   => true,
+				'!='  => true,
+				'<=>' => true,
+				'%'   => true,
+			],
+			'/'   => [
+				'+'   => true,
+				'-'   => true,
+				'*'   => true,
+				'/'   => true,
+				'<'   => true,
+				'<='  => true,
+				'>='  => true,
+				'>'   => true,
+				'=='  => true,
+				'='   => true,
+				'!='  => true,
+				'<=>' => true,
+				'%'   => true,
+			],
 			'%'   => self::ALLOWED_EXPRESSION_OPERATORS,
+			'**'  => self::ALLOWED_EXPRESSION_OPERATORS,
 			'<'   => [],
 			'<='  => [],
 			'>='  => [],
@@ -127,6 +157,9 @@
 						break;
 					case '%':
 						$left = Decimals::mod($left, $right);
+						break;
+					case '**':
+						$left = Decimals::pow($left, $right);
 						break;
 				}
 
@@ -408,11 +441,11 @@
 		}
 
 		/**
-		 * Adds two numbers
+		 * Calculates the modulus of two numbers
 		 * @param string $leftOperand The BCMath compatible left operand
 		 * @param string $rightOperand The BCMath compatible right operand
 		 * @param int|null $scale The scale to use for calculation. If omitted, the greater scale of both operands will be used
-		 * @return string The sum
+		 * @return string The modulus
 		 */
 		public static function mod(string $leftOperand, string $rightOperand, int $scale = null): string {
 
@@ -425,6 +458,27 @@
 				throw new DivisionByZeroError('Divisor is 0');
 
 			return static::norm($res);
+		}
+
+		/**
+		 * Calculates the power of two numbers
+		 * @param string $base The BCMath compatible base
+		 * @param string $exponent The BCMath compatible exponent
+		 * @param int|null $scale The scale to use for calculation. If omitted, the greater scale of both operands will be used
+		 * @return string The power
+		 */
+		public static function pow(string $base, string $exponent, int $scale = null): string {
+
+			if (self::isEqual('0', $exponent, $scale))
+				return '1';
+
+			if (self::decimals($exponent) > 0)
+				throw new InvalidArgumentException('Exponent must not be fractional. This is not supported by BCMath.');
+
+			if ($scale === null)
+				$scale = max(static::decimals($base) * 2, static::MUL_DEFAULT_SCALE);
+
+			return static::norm(bcpow($base, $exponent, $scale));
 		}
 
 		/**
