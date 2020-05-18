@@ -439,6 +439,21 @@
 			Decimals::div('1', '0');
 		}
 
+		public function testMod() {
+			$this->assertSame('9', Decimals::mod('99', '10'));
+			$this->assertSame('9.5', Decimals::mod('99.5', '10'));
+			$this->assertSame('1.6', Decimals::mod('6.6', '2.5'));
+			$this->assertSame('-1.6', Decimals::mod('-6.6', '2.5'));
+			$this->assertSame('0', Decimals::mod('0', '2.5'));
+			$this->assertSame('0', Decimals::mod('2.5', '2.5'));
+		}
+
+		public function testMod_byZero() {
+			$this->expectException(\DivisionByZeroError::class);
+
+			Decimals::mod('1', '0');
+		}
+
 		public function testComp() {
 			$this->assertSame(-1, Decimals::comp('2', '4'));
 			$this->assertSame(-1, Decimals::comp('2.5', '4.5'));
@@ -572,6 +587,7 @@
 			$this->assertSame('41', Decimals::expr('20.5', '*', '0.5', '/', '0.25'));
 			$this->assertSame('10.35', Decimals::expr('20.5', '*', '0.5', '+', '0.1'));
 			$this->assertSame('10.15', Decimals::expr('20.5', '*', '0.5', '-', '0.1'));
+			$this->assertSame('0.25', Decimals::expr('20.5', '*', '0.5', '%', '1'));
 			$this->assertSame(true, Decimals::expr('20.5', '*', '0.5', '<', '10.3'));
 			$this->assertSame(true, Decimals::expr('20.5', '*', '0.5', '<=', '10.3'));
 			$this->assertSame(true, Decimals::expr('20.5', '*', '0.5', '=', '10.25'));
@@ -585,6 +601,7 @@
 			$this->assertSame('30.75', Decimals::expr('20.5', '/', '2', '*', '3'));
 			$this->assertSame('10.35', Decimals::expr('20.5', '/', '2', '+', '0.1'));
 			$this->assertSame('10.15', Decimals::expr('20.5', '/', '2', '-', '0.1'));
+			$this->assertSame('0.25', Decimals::expr('20.5', '*', '0.5', '%', '1'));
 			$this->assertSame(true, Decimals::expr('20.5', '/', '2', '<', '10.3'));
 			$this->assertSame(true, Decimals::expr('20.5', '/', '2', '<=', '10.3'));
 			$this->assertSame(true, Decimals::expr('20.5', '/', '2', '=', '10.25'));
@@ -627,6 +644,18 @@
 			$this->assertSame(-1, Decimals::expr('20.5', '<=>', '20.6'));
 
 
+			$this->assertSame('9', Decimals::expr('99', '%', '10'));
+			$this->assertSame('1', Decimals::expr('99', '%', '10', '%', '4'));
+			$this->assertSame('13', Decimals::expr('99', '%', '10', '+', '4'));
+			$this->assertSame('5', Decimals::expr('99', '%', '10', '-', '4'));
+			$this->assertSame('18', Decimals::expr('99', '%', '10', '*', '2'));
+			$this->assertSame('4.5', Decimals::expr('99', '%', '10', '/', '2'));
+			$this->assertSame(true, Decimals::expr('99', '%', '10', '<', '10'));
+			$this->assertSame(true, Decimals::expr('99', '%', '10', '<=', '10'));
+			$this->assertSame(true, Decimals::expr('99', '%', '10', '=', '9'));
+			$this->assertSame(true, Decimals::expr('99', '%', '10', '>=', '8'));
+			$this->assertSame(true, Decimals::expr('99', '%', '10', '>', '8'));
+			$this->assertSame(1, Decimals::expr('99', '%', '10', '<=>', '8'));
 		}
 
 		/**

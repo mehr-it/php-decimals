@@ -23,6 +23,7 @@
 			'='   => true,
 			'!='  => true,
 			'<=>' => true,
+			'%'   => true,
 		];
 
 		const ALLOWED_EXPRESSION_OPERATORS_AFTER_OPERATOR = [
@@ -52,6 +53,7 @@
 			],
 			'*'   => self::ALLOWED_EXPRESSION_OPERATORS,
 			'/'   => self::ALLOWED_EXPRESSION_OPERATORS,
+			'%'   => self::ALLOWED_EXPRESSION_OPERATORS,
 			'<'   => [],
 			'<='  => [],
 			'>='  => [],
@@ -122,6 +124,9 @@
 						break;
 					case '<=>':
 						$left = Decimals::comp($left, $right);
+						break;
+					case '%':
+						$left = Decimals::mod($left, $right);
 						break;
 				}
 
@@ -400,6 +405,26 @@
 
 			return static::norm($res);
 
+		}
+
+		/**
+		 * Adds two numbers
+		 * @param string $leftOperand The BCMath compatible left operand
+		 * @param string $rightOperand The BCMath compatible right operand
+		 * @param int|null $scale The scale to use for calculation. If omitted, the greater scale of both operands will be used
+		 * @return string The sum
+		 */
+		public static function mod(string $leftOperand, string $rightOperand, int $scale = null): string {
+
+			if ($scale === null)
+				$scale = max(static::decimals($leftOperand) * 2, static::decimals($rightOperand) * 2, static::MUL_DEFAULT_SCALE);
+
+			$res = @bcmod($leftOperand, $rightOperand, $scale);
+
+			if ($res === null)
+				throw new DivisionByZeroError('Divisor is 0');
+
+			return static::norm($res);
 		}
 
 		/**

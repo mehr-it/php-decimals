@@ -56,10 +56,13 @@ Any operations can be accessed using the static methods of the `Decimals` class:
     // divide: 5 / 2.5
     Decimals::div('5', '2.5');
     
+    // modulus: 5 % 2
+    Decimals::mod('5', '2');
+    
 For `add()` and `sub()` the result precision is automatically set to the largest
 number of decimals of either operands. This is sufficient for any operation.
 
-For `mul()` and `div()` the result precision is  automatically set to the double
+For `mul()`, `div()` and `mod()` the result precision is  automatically set to the double
 of the largest number of decimals of either operands but at least 16 decimals.
 If you need higher precision, you may specify it as third parameter. The 
 following example outputs 32 decimals:
@@ -196,4 +199,4 @@ which would break mathematical or logical operator precedence, an exception is t
  
 ## TODO
 
-* add wrapper for `bcmod()`, `bcpow()`, `bcpowmod()` and `bcsqrt()`
+* add wrapper for `bcpow()`, `bcpowmod()` and `bcsqrt()`
