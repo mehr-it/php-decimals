@@ -267,6 +267,13 @@
 
 		}
 
+		public function testParse_emptyString() {
+
+			$this->expectException(\InvalidArgumentException::class);
+
+			Decimals::parse('');
+		}
+
 		public function testParse_InvalidNumber_notNumeric() {
 
 			$this->expectException(\InvalidArgumentException::class);

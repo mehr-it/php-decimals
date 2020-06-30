@@ -182,13 +182,15 @@
 
 			// remove whitespaces
 			$parsedValue = trim($value);
+			if ($value === '' || $value === '-' || $value === '+')
+				throw new InvalidArgumentException("\"$value\" is not a valid number");
 
 			// remove plus sign
-			if ($parsedValue[0] == '+')
+			if (($parsedValue[0] ?? null) === '+')
 				$parsedValue = substr($parsedValue, 1);
 
 			// remove preceding zeros
-			if ($parsedValue[0] == '-')
+			if (($parsedValue[0] ?? null) === '-')
 				$parsedValue = '-' . ltrim(substr($parsedValue, 1), '0');
 			else
 				$parsedValue = ltrim($parsedValue, '0');
