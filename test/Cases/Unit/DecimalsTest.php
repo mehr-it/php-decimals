@@ -391,6 +391,7 @@
 
 		public function testAdd() {
 			$this->assertSame('3', Decimals::add('1', '2'));
+			$this->assertSame('3', Decimals::add('01', '02'));
 			$this->assertSame('3', Decimals::add('1.0', '2.0'));
 			$this->assertSame('3', Decimals::add('1.23', '2.45', 0));
 			$this->assertSame('3.68', Decimals::add('1.23', '2.45'));
@@ -400,10 +401,15 @@
 			$this->assertSame('-1.22', Decimals::add('1.23', '-2.45'));
 			$this->assertSame('1.22', Decimals::add('-1.23', '2.45'));
 			$this->assertSame('3.63', Decimals::add('1.23', '2.40'));
+			$this->assertSame('300', Decimals::add('100', '200'));
+			$this->assertSame('-300', Decimals::add('-100', '-200'));
+			$this->assertSame('3.05', Decimals::add('1.05', '2'));
+			$this->assertSame('0', Decimals::add('-1.5', '1.5'));
 		}
 
 		public function testSub() {
 			$this->assertSame('2', Decimals::sub('4', '2'));
+			$this->assertSame('2', Decimals::sub('04', '02'));
 			$this->assertSame('2', Decimals::sub('4.0', '2.0'));
 			$this->assertSame('1', Decimals::sub('4.23', '2.45', 0));
 			$this->assertSame('1.23', Decimals::sub('3.68', '2.45'));
@@ -413,6 +419,10 @@
 			$this->assertSame('1.23', Decimals::sub('-1.22', '-2.45'));
 			$this->assertSame('-1.23', Decimals::sub('1.22', '2.45'));
 			$this->assertSame('1.23', Decimals::sub('3.63', '2.40'));
+			$this->assertSame('-100', Decimals::sub('100', '200'));
+			$this->assertSame('100', Decimals::sub('-100', '-200'));
+			$this->assertSame('-0.95', Decimals::sub('1.05', '2'));
+			$this->assertSame('0', Decimals::sub('1.5', '1.5'));
 		}
 
 		public function testMul() {

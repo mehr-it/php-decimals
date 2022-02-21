@@ -298,7 +298,7 @@
 		 */
 		public static function norm(string $number): string {
 
-			if (!trim($number . ''))
+			if ($number === '')
 				return '0';
 
 			// remember and strip sign
@@ -315,7 +315,7 @@
 			// strip off trailing decimal zeros
 			$sepPos = strpos($number, '.');
 			if ($sepPos !== false)
-				$number = substr($number, 0, $sepPos) . rtrim(substr($number, $sepPos), '.0');
+				$number = rtrim(rtrim($number, '0'), '.');
 
 			// remove leading zeros
 			$number = ltrim($number, '0');
@@ -337,7 +337,7 @@
 		 * @return string The absolute value
 		 */
 		public static function abs(string $number): string {
-			if ($number !== null && $number[0] == '-')
+			if ($number[0] == '-')
 				$number = substr($number, 1);
 
 			return static::norm($number);
@@ -349,18 +349,10 @@
 		 * @return int The number of decimals
 		 */
 		public static function decimals(string $number): int {
-
-			// get absolute value
-			if ($number !== null && $number[0] == '-')
-				$number = substr($number, 1);
-
-			// find decimal point pos
-			$decimalPos = strpos($number, '.');
-
-			if ($decimalPos !== false)
-				return strlen($number) - $decimalPos - 1;
-			else
-				return 0;
+			
+			return ($decimalPos = strpos($number, '.')) !== false ?
+				strlen($number) - $decimalPos - 1 :
+				0;
 		}
 
 		/**
@@ -381,10 +373,20 @@
 		 */
 		public static function add(string $leftOperand, string $rightOperand, int $scale = null): string {
 
-			if ($scale === null)
-				$scale = max(static::decimals($leftOperand), static::decimals($rightOperand));
+			$scale = $scale !== null ?
+				$scale :
+				max(
+					($decimalPos = strpos($leftOperand, '.')) !== false ? strlen($leftOperand) - $decimalPos - 1 : 0,
+					($decimalPos = strpos($rightOperand, '.')) !== false ? strlen($rightOperand) - $decimalPos - 1 : 0
+				);
 
-			return static::norm(bcadd($leftOperand, $rightOperand, $scale));
+			$res = bcadd($leftOperand, $rightOperand, $scale);
+			
+			// bcadd does not remove unneeded decimals => let's do it here
+			if (strpos($res, '.') !== false) 
+				$res = rtrim(rtrim($res, '0'), '.');
+			
+			return $res;
 		}
 
 		/**
@@ -396,10 +398,20 @@
 		 */
 		public static function sub(string $leftOperand, string $rightOperand, int $scale = null): string {
 
-			if ($scale === null)
-				$scale = max(static::decimals($leftOperand), static::decimals($rightOperand));
+			$scale = $scale !== null ?
+				$scale :
+				max(
+					($decimalPos = strpos($leftOperand, '.')) !== false ? strlen($leftOperand) - $decimalPos - 1 : 0,
+					($decimalPos = strpos($rightOperand, '.')) !== false ? strlen($rightOperand) - $decimalPos - 1 : 0
+				);
 
-			return static::norm(bcsub($leftOperand, $rightOperand, $scale));
+			$res = bcsub($leftOperand, $rightOperand, $scale);
+
+			// bcsub does not remove unneeded decimals => let's do it here
+			if (strpos($res, '.') !== false)
+				$res = rtrim(rtrim($res, '0'), '.');
+			
+			return $res;
 		}
 
 		/**
@@ -412,12 +424,21 @@
 		 */
 		public static function mul(string $leftOperand, string $rightOperand, int $scale = null): string {
 
-			if ($scale === null)
-				$scale = max(static::decimals($leftOperand) * 2, static::decimals($rightOperand) * 2, static::MUL_DEFAULT_SCALE);
+			$scale = $scale !== null ?
+				$scale :
+				max(
+					(($decimalPos = strpos($leftOperand, '.')) !== false ? strlen($leftOperand) - $decimalPos - 1 : 0) * 2,
+					(($decimalPos = strpos($rightOperand, '.')) !== false ? strlen($rightOperand) - $decimalPos - 1 : 0) *2,
+					static::MUL_DEFAULT_SCALE
+				);
 
+			$res = bcmul($leftOperand, $rightOperand, $scale);
 
-			return static::norm(bcmul($leftOperand, $rightOperand, $scale));
+			// bcmul does not remove unneeded decimals => let's do it here
+			if (strpos($res, '.') !== false)
+				$res = rtrim(rtrim($res, '0'), '.');
 
+			return $res;
 		}
 
 		/**
@@ -430,15 +451,24 @@
 		 */
 		public static function div(string $leftOperand, string $rightOperand, int $scale = null): string {
 
-			if ($scale === null)
-				$scale = max(static::decimals($leftOperand) * 2, static::decimals($rightOperand) * 2, static::MUL_DEFAULT_SCALE);
-
+			$scale = $scale !== null ?
+				$scale :
+				max(
+					(($decimalPos = strpos($leftOperand, '.')) !== false ? strlen($leftOperand) - $decimalPos - 1 : 0) * 2,
+					(($decimalPos = strpos($rightOperand, '.')) !== false ? strlen($rightOperand) - $decimalPos - 1 : 0) * 2,
+					static::MUL_DEFAULT_SCALE
+				);
+			
 			$res = @bcdiv($leftOperand, $rightOperand, $scale);
 
 			if ($res === null)
 				throw new DivisionByZeroError('Divisor is 0');
 
-			return static::norm($res);
+			// bcdiv does not remove unneeded decimals => let's do it here
+			if (strpos($res, '.') !== false)
+				$res = rtrim(rtrim($res, '0'), '.');
+
+			return $res;
 
 		}
 
@@ -451,15 +481,24 @@
 		 */
 		public static function mod(string $leftOperand, string $rightOperand, int $scale = null): string {
 
-			if ($scale === null)
-				$scale = max(static::decimals($leftOperand) * 2, static::decimals($rightOperand) * 2, static::MUL_DEFAULT_SCALE);
-
+			$scale = $scale !== null ?
+				$scale :
+				max(
+					(($decimalPos = strpos($leftOperand, '.')) !== false ? strlen($leftOperand) - $decimalPos - 1 : 0) * 2,
+					(($decimalPos = strpos($rightOperand, '.')) !== false ? strlen($rightOperand) - $decimalPos - 1 : 0) * 2,
+					static::MUL_DEFAULT_SCALE
+				);
+			
 			$res = @bcmod($leftOperand, $rightOperand, $scale);
 
 			if ($res === null)
 				throw new DivisionByZeroError('Divisor is 0');
 
-			return static::norm($res);
+			// bcmod does not remove unneeded decimals => let's do it here
+			if (strpos($res, '.') !== false)
+				$res = rtrim(rtrim($res, '0'), '.');
+			
+			return $res;
 		}
 
 		/**
@@ -470,17 +509,25 @@
 		 * @return string The power
 		 */
 		public static function pow(string $base, string $exponent, int $scale = null): string {
-
-			if (self::isEqual('0', $exponent, $scale))
-				return '1';
-
-			if (self::decimals($exponent) > 0)
+			
+			if ((($decimalPos = strpos($exponent, '.')) !== false ? strlen($exponent) - $decimalPos - 1 : 0) > 0)
 				throw new InvalidArgumentException('Exponent must not be fractional. This is not supported by BCMath.');
 
-			if ($scale === null)
-				$scale = max(static::decimals($base) * 2, static::MUL_DEFAULT_SCALE);
+			$scale = $scale !== null ?
+				$scale :
+				max(
+					(($decimalPos = strpos($base, '.')) !== false ? strlen($base) - $decimalPos - 1 : 0) * 2,
+					static::MUL_DEFAULT_SCALE
+				);
+			
 
-			return static::norm(bcpow($base, $exponent, $scale));
+			$res = bcpow($base, $exponent, $scale);
+			
+			// bcpow does not remove unneeded decimals => let's do it here
+			if (strpos($res, '.') !== false)
+				$res = rtrim(rtrim($res, '0'), '.');
+			
+			return $res;
 		}
 
 		/**
@@ -492,8 +539,12 @@
 		 */
 		public static function comp(string $leftOperand, string $rightOperand, int $scale = null): int {
 
-			if ($scale === null)
-				$scale = max(static::decimals($leftOperand), static::decimals($rightOperand));
+			$scale = $scale !== null ?
+				$scale :
+				max(
+					($decimalPos = strpos($leftOperand, '.')) !== false ? strlen($leftOperand) - $decimalPos - 1 : 0,
+					($decimalPos = strpos($rightOperand, '.')) !== false ? strlen($rightOperand) - $decimalPos - 1 : 0
+				);
 
 			return bccomp($leftOperand, $rightOperand, $scale);
 		}
@@ -506,7 +557,15 @@
 		 * @return bool True if the left operand is greater than the right operand. Else false.
 		 */
 		public static function isGreaterThan(string $leftOperand, string $rightOperand, int $scale = null): bool {
-			return static::comp($leftOperand, $rightOperand, $scale) > 0;
+
+			$scale = $scale !== null ?
+				$scale :
+				max(
+					($decimalPos = strpos($leftOperand, '.')) !== false ? strlen($leftOperand) - $decimalPos - 1 : 0,
+					($decimalPos = strpos($rightOperand, '.')) !== false ? strlen($rightOperand) - $decimalPos - 1 : 0
+				);
+			
+			return bccomp($leftOperand, $rightOperand, $scale) > 0;
 		}
 
 		/**
@@ -517,7 +576,15 @@
 		 * @return bool True if the left operand is greater than the or equal to right operand. Else false.
 		 */
 		public static function isGreaterThanOrEqual(string $leftOperand, string $rightOperand, int $scale = null): bool {
-			return static::comp($leftOperand, $rightOperand, $scale) >= 0;
+
+			$scale = $scale !== null ?
+				$scale :
+				max(
+					($decimalPos = strpos($leftOperand, '.')) !== false ? strlen($leftOperand) - $decimalPos - 1 : 0,
+					($decimalPos = strpos($rightOperand, '.')) !== false ? strlen($rightOperand) - $decimalPos - 1 : 0
+				);
+			
+			return bccomp($leftOperand, $rightOperand, $scale) >= 0;
 		}
 
 		/**
@@ -528,7 +595,15 @@
 		 * @return bool True if the left operand is less than the right operand. Else false.
 		 */
 		public static function isLessThan(string $leftOperand, string $rightOperand, int $scale = null): bool {
-			return static::comp($leftOperand, $rightOperand, $scale) < 0;
+
+			$scale = $scale !== null ?
+				$scale :
+				max(
+					($decimalPos = strpos($leftOperand, '.')) !== false ? strlen($leftOperand) - $decimalPos - 1 : 0,
+					($decimalPos = strpos($rightOperand, '.')) !== false ? strlen($rightOperand) - $decimalPos - 1 : 0
+				);
+			
+			return bccomp($leftOperand, $rightOperand, $scale) < 0;
 		}
 
 		/**
@@ -539,7 +614,15 @@
 		 * @return bool True if the left operand is less than or equal to the right operand. Else false.
 		 */
 		public static function isLessThanOrEqual(string $leftOperand, string $rightOperand, int $scale = null): bool {
-			return static::comp($leftOperand, $rightOperand, $scale) <= 0;
+
+			$scale = $scale !== null ?
+				$scale :
+				max(
+					($decimalPos = strpos($leftOperand, '.')) !== false ? strlen($leftOperand) - $decimalPos - 1 : 0,
+					($decimalPos = strpos($rightOperand, '.')) !== false ? strlen($rightOperand) - $decimalPos - 1 : 0
+				);
+			
+			return bccomp($leftOperand, $rightOperand, $scale) <= 0;
 		}
 
 		/**
@@ -550,7 +633,15 @@
 		 * @return bool True if both operands are equal. Else false.
 		 */
 		public static function isEqual(string $leftOperand, string $rightOperand, int $scale = null): bool {
-			return static::comp($leftOperand, $rightOperand, $scale) === 0;
+
+			$scale = $scale !== null ?
+				$scale :
+				max(
+					($decimalPos = strpos($leftOperand, '.')) !== false ? strlen($leftOperand) - $decimalPos - 1 : 0,
+					($decimalPos = strpos($rightOperand, '.')) !== false ? strlen($rightOperand) - $decimalPos - 1 : 0
+				);
+			
+			return bccomp($leftOperand, $rightOperand, $scale) === 0;
 		}
 
 		/**
@@ -561,6 +652,14 @@
 		 * @return bool True if both operands are not equal. Else false.
 		 */
 		public static function isNotEqual(string $leftOperand, string $rightOperand, int $scale = null): bool {
-			return static::comp($leftOperand, $rightOperand, $scale) !== 0;
+
+			$scale = $scale !== null ?
+				$scale :
+				max(
+					($decimalPos = strpos($leftOperand, '.')) !== false ? strlen($leftOperand) - $decimalPos - 1 : 0,
+					($decimalPos = strpos($rightOperand, '.')) !== false ? strlen($rightOperand) - $decimalPos - 1 : 0
+				);
+			
+			return bccomp($leftOperand, $rightOperand, $scale) !== 0;
 		}
 	}
