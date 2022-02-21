@@ -383,7 +383,7 @@
 			$res = bcadd($leftOperand, $rightOperand, $scale);
 			
 			// bcadd does not remove unneeded decimals => let's do it here
-			if (strpos($res, '.') !== false) 
+			if ($scale > 0) 
 				$res = rtrim(rtrim($res, '0'), '.');
 			
 			return $res;
@@ -408,7 +408,7 @@
 			$res = bcsub($leftOperand, $rightOperand, $scale);
 
 			// bcsub does not remove unneeded decimals => let's do it here
-			if (strpos($res, '.') !== false)
+			if ($scale > 0)
 				$res = rtrim(rtrim($res, '0'), '.');
 			
 			return $res;
@@ -435,7 +435,7 @@
 			$res = bcmul($leftOperand, $rightOperand, $scale);
 
 			// bcmul does not remove unneeded decimals => let's do it here
-			if (strpos($res, '.') !== false)
+			if ($scale > 0)
 				$res = rtrim(rtrim($res, '0'), '.');
 
 			return $res;
@@ -465,7 +465,7 @@
 				throw new DivisionByZeroError('Divisor is 0');
 
 			// bcdiv does not remove unneeded decimals => let's do it here
-			if (strpos($res, '.') !== false)
+			if ($scale > 0)
 				$res = rtrim(rtrim($res, '0'), '.');
 
 			return $res;
@@ -495,7 +495,7 @@
 				throw new DivisionByZeroError('Divisor is 0');
 
 			// bcmod does not remove unneeded decimals => let's do it here
-			if (strpos($res, '.') !== false)
+			if ($scale > 0)
 				$res = rtrim(rtrim($res, '0'), '.');
 			
 			return $res;
@@ -524,7 +524,7 @@
 			$res = bcpow($base, $exponent, $scale);
 			
 			// bcpow does not remove unneeded decimals => let's do it here
-			if (strpos($res, '.') !== false)
+			if ($scale > 0)
 				$res = rtrim(rtrim($res, '0'), '.');
 			
 			return $res;
