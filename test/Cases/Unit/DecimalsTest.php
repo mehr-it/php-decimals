@@ -588,6 +588,33 @@
 
 		}
 
+		public function testMax() {
+
+			$this->assertSame('1.45', Decimals::max('-2', '0', '1.45', '1.4', '-1.45'));
+			$this->assertSame('1.45', Decimals::max('0', '1.45'));
+			$this->assertSame('1.45', Decimals::max('1.45', '1.45'));
+			$this->assertSame('1.45', Decimals::max('1.45'));
+			$this->assertSame('0', Decimals::max());
+		}
+		
+		public function testMin() {
+
+			$this->assertSame('-1.45', Decimals::min('-1', '0', '1.45', '1.4', '-1.45'));
+			$this->assertSame('-1.45', Decimals::min('0', '-1.45'));
+			$this->assertSame('-1.45', Decimals::min('-1.45', '-1.45'));
+			$this->assertSame('-1.45', Decimals::min('-1.45'));
+			$this->assertSame('0', Decimals::min());
+		}
+		
+		public function testSum() {
+
+			$this->assertSame('0.4', Decimals::sum('-1', '0', '1.45', '1.4', '-1.45'));
+			$this->assertSame('8.55', Decimals::sum('0', '-1.45', '10'));
+			$this->assertSame('-2.9', Decimals::sum('-1.45', '-1.45'));
+			$this->assertSame('1.45', Decimals::sum('1.45'));
+			$this->assertSame('0', Decimals::sum());
+		}
+
 		public function testExpr() {
 
 			$this->assertSame('78.2',  Decimals::expr('78.2'));

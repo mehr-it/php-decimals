@@ -72,6 +72,9 @@ following example outputs 32 decimals:
 
     Decimals::div('1', '3', 32);
     
+The `sum()` function sums up all given operands:
+    
+    Decimals::sum('1', '2.1', '-0.3'); 
     
 ### Converting and parsing
 Sometimes you need to convert a floating number to a string. As mentioned
@@ -155,7 +158,7 @@ are equal and `1` if the right operand is greater:
     Decimals::comp('6', '1.5');   // = 1
     
 To make code more readable, the following functions handle specific
-comparision cases:
+comparison cases:
 
     Decimals::isEqual('1.5', '6');               // = false
     Decimals::isNotEqual('1.5', '6');            // = true
@@ -163,6 +166,11 @@ comparision cases:
     Decimals::isGreaterThanOrEqual('1.5', '6');  // = false
     Decimals::isLessThan('1.5', '6');            // = true
     Decimals::isLessThanOrEqual('1.5', '6');     // = true
+
+To find the maximum or minimum of a given value set, the `max()` and `min()` functions exist:
+
+    Decimals::max('1', '2', '3');   // '3'
+    Decimals::min('1', '2', '3');   // '1'
 
     
 ### Mathematical functions

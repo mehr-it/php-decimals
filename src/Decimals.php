@@ -662,4 +662,64 @@
 			
 			return bccomp($leftOperand, $rightOperand, $scale) !== 0;
 		}
+
+		/**
+		 * Returns the maximum value
+		 * @param string ...$values The values to determine the maximum value of
+		 * @return string The maximum value. 0 if no values are passed.
+		 */
+		public static function max(...$values): string {
+			
+			if (count($values) === 0)
+				return '0';
+			
+			$max = null;
+			
+			foreach($values as $curr) {
+				
+				if ($max === null || self::isGreaterThan($curr, $max))
+					$max = $curr;
+			}
+			
+			
+			return $max;
+		}
+		
+		/**
+		 * Returns the minimum value
+		 * @param string ...$values The values to determine the minimum value of
+		 * @return string The minimum value. 0 if no values are passed.
+		 */
+		public static function min(...$values): string {
+			
+			if (count($values) === 0)
+				return '0';
+			
+			$max = null;
+			
+			foreach($values as $curr) {
+				
+				if ($max === null || self::isLessThan($curr, $max))
+					$max = $curr;
+			}
+			
+			
+			return $max;
+		}
+
+		/**
+		 * Returns the sum of all operands
+		 * @param string ...$operands The operands to sum
+		 * @return string The sum. 0 if no operands are passed.
+		 */
+		public static function sum(...$operands): string {
+
+			$result = '0';
+
+			foreach ($operands as $curr) {
+				$result = Decimals::add($result, $curr);
+			}
+			
+			return $result;
+		}
 	}
