@@ -210,4 +210,4 @@ which would break mathematical or logical operator precedence, an exception is t
  
 ## TODO
 
-* add wrapper for `bcpow()`, `bcpowmod()` and `bcsqrt()`
+* add wrapper for `bcpowmod()` and `bcsqrt()`

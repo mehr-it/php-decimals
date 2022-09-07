@@ -477,6 +477,7 @@
 			$this->assertSame('2.25', Decimals::pow('1.5', '2'));
 			$this->assertSame('2.25', Decimals::pow('-1.5', '2'));
 			$this->assertSame('1', Decimals::pow('9', '0'));
+			$this->assertSame('0.001', Decimals::pow('0.1', '3'));
 		}
 
 		public function testPow_fractional() {

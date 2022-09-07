@@ -505,7 +505,7 @@
 		 * Calculates the power of two numbers
 		 * @param string $base The BCMath compatible base
 		 * @param string $exponent The BCMath compatible exponent
-		 * @param int|null $scale The scale to use for calculation. If omitted, the greater scale of both operands will be used
+		 * @param int|null $scale The scale to use for calculation. If omitted a reasonable scale will be chosen automatically
 		 * @return string The power
 		 */
 		public static function pow(string $base, string $exponent, int $scale = null): string {
@@ -516,7 +516,7 @@
 			$scale = $scale !== null ?
 				$scale :
 				max(
-					(($decimalPos = strpos($base, '.')) !== false ? strlen($base) - $decimalPos - 1 : 0) * 2,
+					(($decimalPos = strpos($base, '.')) !== false ? strlen($base) - $decimalPos - 1 : 0) * $exponent * 2,
 					static::MUL_DEFAULT_SCALE
 				);
 			
